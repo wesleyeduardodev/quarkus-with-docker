@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  app:
+    image: wesley-eduardo/quarkus-with-docker:1.0.0-SNAPSHOT
+    build:
+      context: src/main/docker
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - QUARKUS_DATASOURCE_URL=jdbc:postgresql://db:5432/quarkus-with-docker
+      - QUARKUS_DATASOURCE_USERNAME=postgres
+      - QUARKUS_DATASOURCE_PASSWORD=root
+      - QUARKUS_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8080:8080"
+    networks:
+      - quarkus-with-docker
+
+  db:
+    image: 'postgres'
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=quarkus-with-docker
+    networks:
+      - quarkus-with-docker
+
+networks:
+  quarkus-with-docker:
+    external: true
+    name: quarkus-with-docker
